@@ -1,4 +1,4 @@
-const router = (require('express')).Router();
+const { body, validationResult } = require('express-validator');
 const Todo = require('../models/todoModel');
 
 // Retrieve all todo tasks
@@ -12,18 +12,28 @@ router.get('/', async (req, res) => {
 });
 
 // Add a new todo task
-router.post('/', async (req, res) => {
-  const todo = new Todo({
-    task: req.body.task,
-    description: req.body.description
-  });
-  try {
-    const newTodo = await todo.save();
-    res.status(201).json(newTodo);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+router.post('/', 
+  // Validation middleware
+  body('task').notEmpty().withMessage('Task is required'),
+  body('description').optional().isString().withMessage('Description must be a string'),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    
+    const todo = new Todo({
+      task: req.body.task,
+      description: req.body.description
+    });
+    try {
+      const newTodo = await todo.save();
+      res.status(201).json(newTodo);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
 });
+
 
 // Modify a todo task
 router.put('/:id', async (req, res) => {

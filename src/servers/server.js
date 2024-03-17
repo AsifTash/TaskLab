@@ -1,4 +1,4 @@
-const express = require('express');
+const { body } = require('express-validator');
 const mongoose = require('mongoose');
 const todoRoutes = require('./routes/todoRoutes');
 
