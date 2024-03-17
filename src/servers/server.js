@@ -1,3 +1,4 @@
+const errorHandler = require('./errorHandler/errorHandler');
 const { body } = require('express-validator');
 const mongoose = require('mongoose');
 const todoRoutes = require('./routes/todoRoutes');
@@ -20,4 +21,5 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
 
 // Use the todoRoutes middleware
 app.use('/todos', todoRoutes);
-
+// Error handling middleware
+app.use(errorHandler);
