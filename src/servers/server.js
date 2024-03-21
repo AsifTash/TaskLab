@@ -1,16 +1,17 @@
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const compression = require('compression');
+const cors = require('cors'); // Import CORS middleware
 const todoRoutes = require('../routes/todoRoutes');
 const errorHandler = require('../errorHandler/errorHandler');
 const logger = require('../logger/logger');
 
 const app = express();
 
-const PORT = process.env.PORT || 3000; // Use PORT environment variable
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/todo'; // Use MONGODB_URI environment variable or default value
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/todo';
 
 // Connect to MongoDB
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -29,6 +30,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
 app.use(express.json());
 app.use(helmet());
 app.use(compression());
+app.use(cors()); // Use CORS middleware
 app.use(logger);
 
 // Route middleware
