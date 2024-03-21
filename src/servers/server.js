@@ -1,13 +1,16 @@
-const errorHandler = require('./errorHandler/errorHandler');
-const { body } = require('express-validator');
+const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet'); // Import Helmet middleware
 const todoRoutes = require('./routes/todoRoutes');
+const errorHandler = require('./errorHandler/errorHandler');
+const logger = require('./logger/logger');
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 const MONGODB_URI = 'mongodb://localhost:27017/todo';
 
+// Connect to MongoDB
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB');
@@ -17,9 +20,19 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
   })
   .catch((err) => {
     console.error('Error connecting to MongoDB:', err);
+    process.exit(1);
   });
 
-// Use the todoRoutes middleware
+// Middleware
+app.use(express.json());
+app.use(helmet()); // Use Helmet middleware for security
+app.use(logger);
+
+// Route middleware
 app.use('/todos', todoRoutes);
+
 // Error handling middleware
 app.use(errorHandler);
+
+module.exports = app;
+
