@@ -1,9 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const helmet = require('helmet'); // Import Helmet middleware
-const todoRoutes = require('./routes/todoRoutes');
-const errorHandler = require('./errorHandler/errorHandler');
-const logger = require('./logger/logger');
+const helmet = require('helmet');
+const compression = require('compression'); // Import Compression middleware
+const todoRoutes = require('../routes/todoRoutes');
+const errorHandler = require('../errorHandler/errorHandler');
+const logger = require('../logger/logger');
 
 const app = express();
 
@@ -25,7 +26,8 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
 
 // Middleware
 app.use(express.json());
-app.use(helmet()); // Use Helmet middleware for security
+app.use(helmet());
+app.use(compression()); // Use Compression middleware
 app.use(logger);
 
 // Route middleware
