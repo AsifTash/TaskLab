@@ -3,7 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const compression = require('compression');
-const cors = require('cors'); // Import CORS middleware
+const cors = require('cors');
+const rateLimit = require('express-rate-limit'); // Import rate limiting middleware
 const todoRoutes = require('../routes/todoRoutes');
 const errorHandler = require('../errorHandler/errorHandler');
 const logger = require('../logger/logger');
@@ -26,11 +27,18 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
     process.exit(1);
   });
 
+// Rate limiting middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // Limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
+
 // Middleware
 app.use(express.json());
 app.use(helmet());
 app.use(compression());
-app.use(cors()); // Use CORS middleware
+app.use(cors());
 app.use(logger);
 
 // Route middleware
