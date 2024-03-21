@@ -1,15 +1,16 @@
+require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const compression = require('compression'); // Import Compression middleware
+const compression = require('compression');
 const todoRoutes = require('../routes/todoRoutes');
 const errorHandler = require('../errorHandler/errorHandler');
 const logger = require('../logger/logger');
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
-const MONGODB_URI = 'mongodb://localhost:27017/todo';
+const PORT = process.env.PORT || 3000; // Use PORT environment variable
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/todo'; // Use MONGODB_URI environment variable or default value
 
 // Connect to MongoDB
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -27,7 +28,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
 // Middleware
 app.use(express.json());
 app.use(helmet());
-app.use(compression()); // Use Compression middleware
+app.use(compression());
 app.use(logger);
 
 // Route middleware
