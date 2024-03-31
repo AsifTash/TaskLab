@@ -41,6 +41,11 @@ app.use(compression());
 app.use(cors());
 app.use(logger);
 
+// Define a route handler for the root endpoint
+app.get('/', (req, res) => {
+  res.send('Welcome to the Todo API');
+});
+
 // Route middleware
 app.use('/todos', todoRoutes);
 
